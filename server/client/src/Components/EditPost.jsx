@@ -1,16 +1,27 @@
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-export default function AddPost() {
+export default function EditPost() {
+  const [post, setPost] = useState({});
+  const { id } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get(`${window.location.origin}/blog/${id}`)
+      .then((res) => setPost(res.data))
+      .catch((err) => console.log(err));
+  }, [id]);
+
   function handleSubmit(e) {
     e.preventDefault();
     const title = e.target[0].value;
     const imageUrl = e.target[1].value;
     const description = e.target[2].value;
     axios
-      .post("http://localhost:3000/blog", {
+      .patch(`${window.location.origin}/blog/${id}`, {
         title,
         description,
         imageUrl,
@@ -19,13 +30,12 @@ export default function AddPost() {
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "Post created successfully",
+          title: "Post updated successfully",
           showConfirmButton: false,
           timer: 1500,
         });
-        navigate("/");
-      })
-      .catch((err) => console.log(err));
+        navigate(`/post/${id}`);
+      });
   }
 
   return (
@@ -33,7 +43,7 @@ export default function AddPost() {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            New Post
+            Edit: {post.title}
           </h2>
         </div>
 
@@ -50,6 +60,7 @@ export default function AddPost() {
                 <input
                   id="title"
                   type="text"
+                  defaultValue={post.title}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -69,6 +80,7 @@ export default function AddPost() {
                 <input
                   id="imageUrl"
                   type="imageUrl"
+                  defaultValue={post.imageUrl}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -87,6 +99,7 @@ export default function AddPost() {
                 <textarea
                   id="description"
                   type="text"
+                  defaultValue={post.description}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 ></textarea>
@@ -98,7 +111,7 @@ export default function AddPost() {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Add Post
+                Update Post
               </button>
             </div>
           </form>

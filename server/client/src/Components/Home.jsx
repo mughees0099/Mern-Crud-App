@@ -6,7 +6,7 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/blog")
+      .get(`${window.location.origin}/blog`)
       .then((res) => setPost(res.data))
       .catch((err) => console.log(err));
   }, []);

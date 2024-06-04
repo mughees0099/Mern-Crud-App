@@ -10,7 +10,7 @@ export default function ShowPost() {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/blog/${id}`)
+      .get(`${window.location.origin}/blog/${id}`)
       .then((res) => SetPost(res.data))
       .catch((err) => console.log(err));
   }, [id]);
@@ -24,7 +24,7 @@ export default function ShowPost() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:3000/blog/${id}`);
+        axios.delete(`${window.location.origin}/blog/${id}`);
 
         Swal.fire({
           title: "Deleted!",

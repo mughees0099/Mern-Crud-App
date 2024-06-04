@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import express from "express";
 import Blog from "./schema.js";
 import cors from "cors";
+const path = require("path");
 
 const app = express();
 
@@ -18,6 +19,11 @@ mongoose
   .connect(dbUrl)
   .then((res) => console.log("MongoDB connected"))
   .catch((err) => console.log("Connection failed"));
+
+app.get("/", (req, res) => {
+  app.use(express.static(path.resolve(__dirname, "client", "build")));
+  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+});
 
 app.get("/blog", async (req, res) => {
   const blogData = await Blog.find();
