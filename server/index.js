@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import express from "express";
 import Blog from "./schema.js";
 import cors from "cors";
-const path = require("path");
+import path from "path";
 
 const app = express();
 
