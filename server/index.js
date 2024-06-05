@@ -8,6 +8,11 @@ import express from "express";
 import Blog from "./schema.js";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -20,10 +25,7 @@ mongoose
   .then((res) => console.log("MongoDB connected"))
   .catch((err) => console.log("Connection failed"));
 
-app.get("/", (req, res) => {
-  app.use(express.static(path.resolve(__dirname, "client", "build")));
-  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-});
+// Serve static files from the React app
 
 app.get("/blog", async (req, res) => {
   const blogData = await Blog.find();
@@ -51,6 +53,13 @@ app.patch("/blog/:id", async (req, res) => {
 app.delete("/blog/:id", async (req, res) => {
   const deletedBlog = await Blog.findByIdAndDelete(req.params.id);
   res.send("Blog deleted successfully");
+});
+app.use(express.static(path.resolve(__dirname, "client", "dist")));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
 });
 
 app.listen(3000, () => console.log("App is running on port 3000"));
